@@ -12,10 +12,28 @@ BOT_NAME = "asesdata"
 SPIDER_MODULES = ["asesdata.spiders"]
 NEWSPIDER_MODULE = "asesdata.spiders"
 
-# DOWNLOADER_MIDDLEWARES = {
-#     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
-#     'random_useragent.RandomUserAgentMiddleware': 400
-# }
+
+
+
+
+
+
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
+    'scrapy_splash.SplashCookiesMiddleware': 723,
+    'scrapy_splash.SplashMiddleware': 725,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+}
+SPIDER_MIDDLEWARES = {
+    'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
+}
+# Define the Splash DupeFilter
+DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
+
+
+
+
 #
 # USER_AGENT_LIST = "/path/to/useragents.txt"
 

@@ -1,4 +1,7 @@
+from time import sleep
+from scrapy.http import Response
 import scrapy
+from scrapy_splash import SplashRequest
 
 
 class AsesStatusSpider(scrapy.Spider):
@@ -8,13 +11,16 @@ class AsesStatusSpider(scrapy.Spider):
 
     def start_requests(self):
         for url in self.start_urls:
-            request = scrapy.Request(url, method='POST',body='url:https://www.tjro.jus.br/',headers={'Content-Type': 'application/x-www-form-urlencoded'},callback=self.parse_httpbin)
+            request = SplashRequest(url, method='POST', body='url=https%3A%2F%2Ftjro.jus.br',
+                                     headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                                     callback=self.parse_httpbin, args={'wait':10})
             yield request
 
     pass
 
     def parse_httpbin(self, response):
         self.logger.info('Got successful response from {}'.format(response.url))
+
         for ases_data in response.css('#tabelaErros'):
             yield {
                 'marcacao': ases_data.css('#tabelaErros tr:nth-child(1) .celula:nth-child(2)::text').get(),
@@ -26,4 +32,6 @@ class AsesStatusSpider(scrapy.Spider):
                 'total': ases_data.css('#total .topo:nth-child(2)::text').get()
 
             }
-        print(response.body)
+
+        print(response.text)
+
